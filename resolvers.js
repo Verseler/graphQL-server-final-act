@@ -2,19 +2,28 @@ import db from "./_db.js";
 
 /**
  * 
- * These are the resolvers, they are codes that used to perform queries in
- * the database based on the blueprint or schema defined
+ ** These are the resolvers, they are codes that used to perform queries in
+ ** the database based on the blueprint or schema defined
  * 
  */
 
 const resolvers = {
   // Resolvers for retrieving records
   Query: {
+    user(_, args) {
+      return db.users.find((user) => user.id === args.id)
+    },
     users() {
       return db.users;
     },
+    post(_, args) {
+      return db.posts.find((post) => post.id === args.id)
+    },
     posts() {
       return db.posts;
+    },
+    comment(_, args) {
+      return db.comments.find((comment) => comment.id === args.id)
     },
     comments() {
       return db.comments;
@@ -41,7 +50,7 @@ const resolvers = {
     }
   },
 
-  // Resolvers for Create, Update, & Delete operations
+  // Resolvers for Create, Update, & Delete operations (User modification as of now)
   Mutation: {
     deleteUser(_, args) {
       db.users = db.users.filter((u) => u.id !== args.id);

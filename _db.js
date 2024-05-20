@@ -1,4 +1,4 @@
-// Local & temporary database
+//* Local & temporary database
 let users = [
   { id: "1", name: "Alice Johnson", age: 28 },
   {

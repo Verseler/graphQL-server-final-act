@@ -23,8 +23,11 @@ export const typeDefs = `#graphql
 
 # Entry points for queries
   type Query {
+    user(id: ID!): User
     users: [User]
+    post(id: ID!): Post
     posts: [Post]
+    comment(id: ID!): Comment
     comments: [Comment]
   }
 
