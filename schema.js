@@ -3,18 +3,22 @@ export const typeDefs = `#graphql
   type User {
     id: ID!,
     name: String!,
-    age: Int!
+    age: Int!,
+    posts: [Post!]  # A user can have many posts
   }
 
   type Post {
     id: ID!,
     title: String!,
     description: String!,
+    comments: [Comment!]  # A post can have many comments
+    user: User!  # A post belongs to one user
   }
 
   type Comment {
     id: ID!,
-    message: String!
+    message: String!,
+    post: Post!  # A comment belongs to one post
   }
 
 # Entry points for queries
@@ -42,4 +46,4 @@ export const typeDefs = `#graphql
     name: String,
     age: Int
   }
-`
+`;
