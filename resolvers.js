@@ -1,82 +1,91 @@
-import db from "./_db.js";
+import db from "./local_db.js";
 
 /**
- * 
+ *
  ** These are the resolvers, they are codes that used to perform queries in
  ** the database based on the blueprint or schema defined
- * 
+ *
  */
 
 const resolvers = {
   // Resolvers for retrieving records
   Query: {
     user(_, args) {
-      return db.users.find((user) => user.id === args.id)
+      return db.users.find((user) => user.id === args.id);
     },
     users() {
       return db.users;
     },
-    post(_, args) {
-      return db.posts.find((post) => post.id === args.id)
+    task(_, args) {
+      return db.tasks.find((task) => task.id === args.id);
     },
-    posts() {
-      return db.posts;
+    tasks() {
+      return db.tasks;
     },
-    comment(_, args) {
-      return db.comments.find((comment) => comment.id === args.id)
+    category(_, args) {
+      return db.categories.find((category) => category.id === args.id);
     },
-    comments() {
-      return db.comments;
+    categories() {
+      return db.categories;
+    },
+    priority(_, args) {
+      return db.priorities.find((priority) => priority.id === args.id);
+    },
+    priorities() {
+      return db.priorities;
     },
   },
-  
+
   // Resolver for related entities/tables
   User: {
-    posts(parent) {
-      return db.posts.filter((posts) => posts.user_id === parent.id)
-    }
+    tasks(parent) {
+      return db.tasks.filter((task) => task.userId === parent.id);
+    },
   },
-  Post: {
-    comments(parent) {
-      return db.comments.filter((comments) => comments.post_id === parent.id)
+  Task: {
+    category(parent) {
+      return db.categories.find(
+        (category) => category.id === parent.categoryId
+      );
+    },
+    priority(parent) {
+      return db.priorities.find(
+        (priority) => priority.id === parent.priorityId
+      );
     },
     user(parent) {
-      return db.users.find((users) => users.id === parent.user_id)
-    }
-  },
-  Comment: {
-    post(parent) {
-      return db.posts.find((posts) => posts.id === parent.post_id)
-    }
-  },
-
-  // Resolvers for Create, Update, & Delete operations (User modification as of now)
-  Mutation: {
-    deleteUser(_, args) {
-      db.users = db.users.filter((u) => u.id !== args.id);
-
-      return db.users;
+      return db.users.find((user) => user.id === parent.userId);
     },
-    addUser(_, args) {
-      const newUser = {
-        ...args.user,
-        id: Math.floor(Math.random() * 10000), //temporary solution in generating ID
+  },
+
+  // Resolvers for Create, Update, & Delete operations
+  Mutation: {
+    addTask(_, args) {
+      const newTask = {
+        ...args.task,
+        id: Math.floor(Math.random() * 10000), // Temporary solution in generating ID
       };
 
-      db.users.push(newUser);
+      db.tasks.push(newTask);
 
-      return newUser;
+      return newTask;
     },
-    updateUser(_, args) {
-      db.users = db.users.map((u) => {
-        if (u.id === args.id) {
-          return { ...u, ...args.edits };
+    deleteTask(_, args) {
+      db.tasks = db.tasks.filter((task) => task.id !== args.id);
+
+      return db.tasks;
+    },
+    updateTask(_, args) {
+      db.tasks = db.tasks.map((task) => {
+        if (task.id === args.id) {
+          console.log({ ...task, ...args.edits })
+          return { ...task, ...args.edits };
+
         }
 
-        return u;
+        return task;
       });
-
-      return db.users.find((u) => u.id === args.id);
+      return db.tasks.find((task) => task.id === args.id);
     },
   },
 };
