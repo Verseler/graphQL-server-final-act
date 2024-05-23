@@ -10,87 +10,78 @@ import UserSchema from "./models/User.model.js";
 const resolvers = {
   // Resolvers for retrieving records
   Query: {
-    user(_, args) {
-      return db.users.find((user) => user.id === args.id);
+    student(_, args) {
+      return db.students.find((student) => student.id === args.id);
     },
-    users() {
-      return db.users;
+    students() {
+      return db.students;
     },
-    task(_, args) {
-      return db.tasks.find((task) => task.id === args.id);
+    assignment(_, args) {
+      return db.assignments.find((assignment) => assignment.id === args.id);
     },
-    tasks() {
-      return db.tasks;
+    assignments() {
+      return db.assignments;
     },
-    category(_, args) {
-      return db.categories.find((category) => category.id === args.id);
+    subject(_, args) {
+      return db.subjects.find((subject) => subject.id === args.id);
     },
-    categories() {
-      return db.categories;
+    subjects() {
+      return db.subjects;
     },
-    priority(_, args) {
-      return db.priorities.find((priority) => priority.id === args.id);
+    instructor(_, args) {
+      return db.instructors.find((instructor) => instructor.id === args.id);
     },
-    priorities() {
-      return db.priorities;
+    instructors() {
+      return db.instructors;
     },
   },
 
   // Resolver for related entities/tables
-  User: {
-    tasks(parent) {
-      return db.tasks.filter((task) => task.userId === parent.id);
+  Student: {
+    assignments(parent) {
+      return db.assignments.filter((assignment) => assignment.studentId === parent.id);
     },
   },
-  Task: {
-    category(parent) {
-      return db.categories.find(
-        (category) => category.id === parent.categoryId
-      );
+  Assignment: {
+    subject(parent) {
+      return db.subjects.find((subject) => subject.id === parent.subjectId);
     },
-    priority(parent) {
-      return db.priorities.find(
-        (priority) => priority.id === parent.priorityId
-      );
+    student(parent) {
+      return db.students.find((student) => student.id === parent.studentId);
     },
-    user(parent) {
-      return db.users.find((user) => user.id === parent.userId);
+  },
+  Instructor: {
+    subjects(parent) {
+      return db.subjects.filter((subject) => parent.subjects.includes(subject.id));
     },
   },
 
   // Resolvers for Create, Update, & Delete operations
   Mutation: {
-    async addUser(_, args) {
-      const user = new UserSchema(args.user);
-      const result = await user.save();
-      return result;
-    },
-    addTask(_, args) {
-      const newTask = {
-        ...args.task,
-        id: Math.floor(Math.random() * 10000), // Temporary solution in generating ID
+    addAssignment(_, args) {
+      const newAssignment = {
+        ...args.assignment,
+        id: Math.floor(Math.random() * 10000).toString(), // Temporary solution in generating ID
       };
 
-      db.tasks.push(newTask);
+      db.assignments.push(newAssignment);
 
-      return newTask;
+      return newAssignment;
     },
-    deleteTask(_, args) {
-      db.tasks = db.tasks.filter((task) => task.id !== args.id);
+    deleteAssignment(_, args) {
+      db.assignments = db.assignments.filter((assignment) => assignment.id !== args.id);
 
-      return db.tasks;
+      return db.assignments;
     },
-    updateTask(_, args) {
-      db.tasks = db.tasks.map((task) => {
-        if (task.id === args.id) {
-          console.log({ ...task, ...args.edits })
-          return { ...task, ...args.edits };
-
+    updateAssignment(_, args) {
+      db.assignments = db.assignments.map((assignment) => {
+        if (assignment.id === args.id) {
+          return { ...assignment, ...args.edits };
         }
 
-        return task;
+        return assignment;
       });
-      return db.tasks.find((task) => task.id === args.id);
+      return db.assignments.find((assignment) => assignment.id === args.id);
     },
   },
 };
