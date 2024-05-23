@@ -1,64 +1,64 @@
 const typeDefs = `#graphql
-# Types for each entities
-type Task {
+# Types for each entity
+type Assignment {
     id: ID!,
     name: String!,
-    category: Category, # a task can have category
-    priority: Priority, # a task can have priority level
-    user: User! # a task belong to a user
+    subject: Subject!, # an assignment belongs have a subject
+    dueDate: String, # an assignment can have a due date
+    student: Student! # an assignment belongs to a student
 }
 
-  
-type User {
+type Student {
     id: ID!,
     name: String!,
-    tasks: [Task!] # a user can have many tasks
-  }
+    assignments: [Assignment!] # a student can have many assignments
+}
 
-  type Category {
+type Subject {
     id: ID!,
     name: String!,
-  }
+    subjectCode: String!,
+}
 
-  type Priority {
+type Instructor {
     id: ID!,
-    level: String!,
-  }
+    name: String!,
+    subjects: [Subject!] # an instructor can teach many subjects
+}
 
 # Entry points for queries
 type Query {
-    task(id: ID!): Task
-    tasks: [Task]
-    category(id: ID!): Category
-    categories: [Category]
-    priority(id: ID!): Priority
-    priorities: [Priority]
-    user(id: ID!): User
-    users: [User]
-  }
+    assignment(id: ID!): Assignment
+    assignments: [Assignment]
+    subject(id: ID!): Subject
+    subjects: [Subject]
+    student(id: ID!): Student
+    students: [Student]
+    instructor(id: ID!): Instructor
+    instructors: [Instructor]
+}
 
 # Entry points that provide CRUD actions to data in the database
-  type Mutation {
-    # We only created mutation entry points for task
-    addTask(task: AddTaskInput!): Task
-    deleteTask(id: ID!): [Task]
-    updateTask(id: ID!, edits: EditTaskInput!): Task
-  }
+type Mutation {
+    # We only created mutation entry points for assignment
+    addAssignment(assignment: AddAssignmentInput!): Assignment
+    deleteAssignment(id: ID!): [Assignment]
+    updateAssignment(id: ID!, edits: EditAssignmentInput!): Assignment
+}
 
-
-# Arguments that are group together 
-  input AddTaskInput {
+# Arguments that are grouped together
+input AddAssignmentInput {
     name: String!,
-    categoryId: ID,
-    priorityId: ID,
-    userId: ID!
-  }
+    subjectId: ID!,
+    dueDate: String,
+    studentId: ID!
+}
 
-  input EditTaskInput {
+input EditAssignmentInput {
     name: String,
-    categoryId: ID,
-    priorityId: ID,
-  }
+    subjectId: ID,
+    dueDate: String,
+}
 `;
 
 export default typeDefs;
