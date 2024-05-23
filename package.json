@@ -12,6 +12,8 @@
   "type": "module",
   "dependencies": {
     "@apollo/server": "^4.10.4",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "mongodb": "^6.6.2",
+    "mongoose": "^8.4.0"
   }
 }

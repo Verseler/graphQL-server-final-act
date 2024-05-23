@@ -40,13 +40,28 @@ type Query {
 
 # Entry points that provide CRUD actions to data in the database
 type Mutation {
+    # Student mutations
+    addStudent(student: AddStudentInput!): Student
+    deleteStudent(id: String!): [Student]
+    updateStudent(id: String!, edits: EditStudentInput!): [Student]
+
+
     # We only created mutation entry points for assignment
     addAssignment(assignment: AddAssignmentInput!): Assignment
-    deleteAssignment(id: ID!): [Assignment]
-    updateAssignment(id: ID!, edits: EditAssignmentInput!): Assignment
+    deleteAssignment(id: String!): [Assignment]
+    updateAssignment(id: String!, edits: EditAssignmentInput!): [Assignment]
 }
 
-# Arguments that are grouped together
+# Parameters for User entity
+input AddStudentInput {
+  name: String!
+}
+
+input EditStudentInput {
+    name: String
+}
+
+# Parameters for Assignment entity
 input AddAssignmentInput {
     name: String!,
     subjectId: ID!,
