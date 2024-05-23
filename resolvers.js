@@ -1,5 +1,8 @@
 import db from "./local_db.js";
-import UserSchema from "./models/User.model.js";
+import mongoose from 'mongoose';
+import StudentSchema from "./models/Student.model.js";
+import AssignmentSchema from "./models/Assignment.model.js";
+
 /**
  *
  ** These are the resolvers, they are codes that used to perform queries in
@@ -10,11 +13,12 @@ import UserSchema from "./models/User.model.js";
 const resolvers = {
   // Resolvers for retrieving records
   Query: {
-    student(_, args) {
-      return db.students.find((student) => student.id === args.id);
+    async student(_, args) {
+      const objectId = new mongoose.Types.ObjectId(args.id);
+      return await StudentSchema.findById(objectId).select('-__v');
     },
-    students() {
-      return db.students;
+    async students() {
+      return await StudentSchema.find().select('-__v');
     },
     assignment(_, args) {
       return db.assignments.find((assignment) => assignment.id === args.id);
@@ -58,30 +62,55 @@ const resolvers = {
 
   // Resolvers for Create, Update, & Delete operations
   Mutation: {
-    addAssignment(_, args) {
-      const newAssignment = {
-        ...args.assignment,
-        id: Math.floor(Math.random() * 10000).toString(), // Temporary solution in generating ID
-      };
 
-      db.assignments.push(newAssignment);
-
-      return newAssignment;
+    // Resolver functions for Students' mutation
+    async addStudent(_, args) {
+      const student = new StudentSchema(args.student);
+      const result = await student.save();
+      
+      return result;
     },
-    deleteAssignment(_, args) {
-      db.assignments = db.assignments.filter((assignment) => assignment.id !== args.id);
 
-      return db.assignments;
+    async deleteStudent(_, args) {
+      const objectId = new mongoose.Types.ObjectId(args.id);
+    
+      await StudentSchema.findByIdAndDelete(objectId).select('-__v');
+      const result = await StudentSchema.find().select('-__v');
+
+      return result;
     },
-    updateAssignment(_, args) {
-      db.assignments = db.assignments.map((assignment) => {
-        if (assignment.id === args.id) {
-          return { ...assignment, ...args.edits };
-        }
+    
+    async updateStudent(_, args) {
+      const objectId = new mongoose.Types.ObjectId(args.id);
 
-        return assignment;
-      });
-      return db.assignments.find((assignment) => assignment.id === args.id);
+      await StudentSchema.findByIdAndUpdate(objectId, args.edits).select('-__v');
+      const result = await StudentSchema.find().select('-__v');
+
+      return result;
+    },
+
+    // Resolver functions for Assignments' mutation
+    async addAssignment(_, args) {
+      const assignment = new AssignmentSchema(args.assignment);
+      const result = await assignment.save();
+      
+      return result;
+    },
+    async deleteAssignment(_, args) {
+      const objectId = new mongoose.Types.ObjectId(args.id);
+    
+      await AssignmentSchema.findByIdAndDelete(objectId).select('-__v');
+      const result = await AssignmentSchema.find().select('-__v');
+
+      return result;
+    },
+    async updateAssignment(_, args) {
+      const objectId = new mongoose.Types.ObjectId(args.id);
+
+      await AssignmentSchema.findByIdAndUpdate(objectId, args.edits).select('-__v');
+      const result = await AssignmentSchema.find().select('-__v');
+
+      return result;
     },
   },
 };
