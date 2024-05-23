@@ -43,8 +43,12 @@ type Query {
     addTask(task: AddTaskInput!): Task
     deleteTask(id: ID!): [Task]
     updateTask(id: ID!, edits: EditTaskInput!): Task
+    addUser(user: AddUserInput!): User
   }
 
+input AddUserInput {
+  name: String!
+}
 
 # Arguments that are group together 
   input AddTaskInput {

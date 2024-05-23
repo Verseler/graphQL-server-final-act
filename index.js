@@ -6,6 +6,16 @@
  *
  */
 
+import mongoose from 'mongoose';
+
+mongoose.connect('mongodb://0.0.0.0:27017/graphql-integ', {})
+.then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.log(error);
+});
+
+
 // Import necessary dependencies from apollo
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";

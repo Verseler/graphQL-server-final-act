@@ -1,5 +1,5 @@
 import db from "./local_db.js";
-
+import UserSchema from "./models/User.model.js";
 /**
  *
  ** These are the resolvers, they are codes that used to perform queries in
@@ -60,6 +60,11 @@ const resolvers = {
 
   // Resolvers for Create, Update, & Delete operations
   Mutation: {
+    async addUser(_, args) {
+      const user = new UserSchema(args.user);
+      const result = await user.save();
+      return result;
+    },
     addTask(_, args) {
       const newTask = {
         ...args.task,
